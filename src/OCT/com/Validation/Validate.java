@@ -3,6 +3,7 @@ package OCT.com.Validation;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Validate {
     Scanner sc = new Scanner(System.in);
@@ -24,14 +25,17 @@ public class Validate {
 
     public static final double MIN_GPA = 0.0;
     public static final double MAX_GPA = 10.0;
+    public static final String FORMAT_NAME = "^[a-zA-z ]+$"; //"";.*\\s{2,}.*;[\p{L}\p{N}\p{P}\p{Z} ]+
+
 
     public static boolean checkName(String name){
-        return !name.contains(" ") && !name.isEmpty() && name.length() <= MAX_LENGTH_NAME;
+        return !name.isEmpty() && name.length() <= MAX_LENGTH_NAME && !Pattern.compile(FORMAT_NAME).matcher(name).find();
+//        return !name.isEmpty() && name.length() <= MAX_LENGTH_NAME;
     }
 
 
     public static boolean checkAddress(String address){
-        return !address.contains(" ") && !address.isEmpty() && address.length() <= MAX_LENGTH_ADDRESS;
+        return  !address.isEmpty() && address.length() <= MAX_LENGTH_ADDRESS;
     }
 
     public static boolean checkDate(LocalDate brithDate){
@@ -46,10 +50,6 @@ public class Validate {
         return !(weight < MIN_WEIGHT) && !(weight > MAX_WEIGHT);
     }
 
-
-//    public static boolean checkIdStudent(String id_student){
-//        return id_student.matches(FORMAT_ID_STUDENT) || id_student.length() == LENGTH_ID_STUDENT;
-//    }
 
     public static boolean checkNameSchool(String nameSchool){
         return !nameSchool.isEmpty() && nameSchool.length() < MAX_NAME_SCHOOL;

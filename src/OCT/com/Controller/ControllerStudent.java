@@ -9,11 +9,11 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class ControllerStudent {
     private static final Scanner scan = new Scanner(System.in);
     private final ArrayList<Student> listStudents = new ArrayList<>();
-    private final Validate validate = new Validate();
 
 
     public ControllerStudent() {
@@ -29,11 +29,12 @@ public class ControllerStudent {
 
     public String inputName() {
         System.out.println("Nhập tên sinh viên: ");
-        String name = scan.nextLine();
+        String name = scan.nextLine().trim();
         if (!Validate.checkName(name)) {
-            System.err.println("Không để trống tên hoặc nhở hơn " + Validate.MAX_LENGTH_NAME + " ký tự");
-            return inputName();
+            System.err.println("Không để trống tên hoặc không chứ ký tự đặc biệt hoặc nhở hơn " + Validate.MAX_LENGTH_NAME + " ký tự");
+            inputName();
         }
+
         return name;
     }
 
@@ -45,7 +46,7 @@ public class ControllerStudent {
             try {
                 date = LocalDate.parse(scan.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 if (!Validate.checkDate(date)) {
-                    System.err.println("Ngày sinh không tồn tại");
+                    System.err.println("Không có ngày sinh như này");
                 } else {
                     flag = false;
                 }
@@ -58,8 +59,8 @@ public class ControllerStudent {
 
     public String inputAddress() {
         System.out.println("Nhập địa chỉ: ");
-        String address = scan.nextLine();
-
+        String address = scan.nextLine().trim();
+//        Pattern p = Pattern.compile("^[a-zA-z0-9 ]+$");&& !p.matcher(address).find()
         if (!Validate.checkAddress(address)) {
             System.err.println("Không được để trống địa chỉ hoặc độ dài địa chỉ < " + Validate.MAX_LENGTH_ADDRESS + " ký tự");
             inputAddress();
@@ -69,40 +70,57 @@ public class ControllerStudent {
 
 
     public float inputHeight() {
-        System.out.println("Nhập chiều cao: ");
-        float height = Float.parseFloat(scan.nextLine());
-        if (!Validate.checkHeight(height)) {
-            System.out.println("Height từ 50.0 -> 300.0");
-            inputHeight();
-        }
+
+        float height = 0f;
+        boolean check_height = false;
+        do {
+            System.out.println("Nhập chiều cao: ");
+            try {
+                height = Float.parseFloat(scan.nextLine().trim());
+                if (!Validate.checkHeight(height)) {
+                    System.err.println("Height từ 50.0 -> 300.0");
+                    inputHeight();
+                }
+                check_height = true;
+            } catch (Exception e) {
+                System.err.println("Nhập sai kiểu dữ liệu");
+
+            }
+        } while (!check_height);
+
+
         return height;
     }
 
 
     public float inputWeight() {
-        System.out.println("Nhập cân nặng: ");
-        float tempWeight = 0f;
-        String input = scan.nextLine();
-        if (input.contains(" ")) {
-            System.out.println("Không được để trống");
-            inputWeight();
-        } else {
-            float weight = Float.parseFloat(scan.nextLine());
-            tempWeight = weight;
-            if (!Validate.checkWeight(weight)) {
-                System.out.println("Height từ 5.0 -> 1000.0");
-                inputHeight();
+        float weight = 0f;
+        boolean check_weight = false;
+        do {
+            try {
+                System.out.println("Nhập cân nặng: ");
+                weight = Float.parseFloat(scan.nextLine());
+
+                if (!Validate.checkWeight(weight)) {
+                    System.out.println("Height từ 5.0 -> 1000.0");
+                    inputWeight();
+                }
+                check_weight = true;
+            } catch (Exception e) {
+                System.out.println("Sai kiểu dữ liệu");
             }
-        }
-        return tempWeight;
+
+
+        } while (!check_weight);
+        return weight;
     }
 
     public String inputCode() {
         System.out.println("Nhap ma sinh vien");
-        String code = scan.nextLine();
+        String code = scan.nextLine().trim();
         for (Student x : listStudents) {
             if (x.getIdStudent().equals(code) || code.length() > Validate.LENGTH_ID_STUDENT) {
-                System.out.println("Mã đã tồn tại hoặc mã > 10 ký tự");
+                System.err.println("Mã đã tồn tại hoặc mã > 10 ký tự");
                 inputCode();
             }
         }
@@ -111,7 +129,7 @@ public class ControllerStudent {
 
     public String inputSchool() {
         System.out.println("Nhập trường: ");
-        String nameSchool = scan.nextLine();
+        String nameSchool = scan.nextLine().trim();
         if (!Validate.checkNameSchool(nameSchool)) {
             System.out.println("không để rỗng và < " + Validate.MAX_NAME_SCHOOL + " ký tự");
             inputSchool();
@@ -125,7 +143,7 @@ public class ControllerStudent {
         int date = 0;
         while (!check_date) {
             try {
-                date = Integer.parseInt(scan.nextLine());
+                date = Integer.parseInt(scan.nextLine().trim());
                 if (Validate.checkStartYear(date)) {
                     check_date = true;
                 } else {
@@ -145,7 +163,7 @@ public class ControllerStudent {
         boolean check_gpa = false;
         while (!check_gpa) {
             try {
-                gpa = Float.parseFloat(scan.nextLine());
+                gpa = Float.parseFloat(scan.nextLine().trim());
                 if (Validate.checkGpa(gpa)) {
                     check_gpa = true;
                 } else {
